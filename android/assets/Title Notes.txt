@@ -1,0 +1,5 @@
+Maquina de estados simple:
+
+title1 -> Fade in + las flechas se clavan en el titulo
+title2 -> el titulo brilla
+title3 -> Estado final
