@@ -3,7 +3,8 @@ android {
         config {
             keyAlias 'android'
             keyPassword 'android'
-            storeFile file('C:/Users/rulaz/Desktop/Escritorio/PixelWar/keys.jks')
+            storeFile file('C:/Users/omora/Desktop/Proyectos android studio/PixelWars Chiquetere/PixelWars Chiquetere/keys.jks')
+
             storePassword 'android'
         }
     }

@@ -24,10 +24,12 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.itesm.pixelwars.PixelWars;
 import com.itesm.pixelwars.Sprites.Actors.CastleActor;
 import com.itesm.pixelwars.Sprites.Animations.Arquero;
+import com.itesm.pixelwars.Sprites.Animations.Cura;
 import com.itesm.pixelwars.Sprites.Animations.Guerrero;
 import com.itesm.pixelwars.Sprites.Animations.TowerAnimation;
 import com.itesm.pixelwars.Sprites.Animations.AnimacionGuerrero;
 import com.itesm.pixelwars.Sprites.Animations.EstadoGuerrero;
+import com.itesm.pixelwars.Sprites.Animations.minero;
 
 
 public class GameScreen implements Screen {
@@ -56,6 +58,8 @@ public class GameScreen implements Screen {
     private float xWarr = 15;
     private float xMiner = 40;
     private float xArcher = 65;
+    private float xMonk = 90;
+    private float xDragon = 115;
 
 
 
@@ -66,11 +70,13 @@ public class GameScreen implements Screen {
 
 
     private Texture actionbar;
-    private Texture warrior_button,miner_button, archer_button;
-    private TextureRegionDrawable trd_warrior_button,trd_miner_button, trd_archer_button;
+    private Texture warrior_button,miner_button, archer_button, monk_button, dragon_button;
+    private TextureRegionDrawable trd_warrior_button,trd_miner_button, trd_archer_button, trd_monk_button, trd_dragon_button;
     private ImageButton btnWarrior;
     private ImageButton btnMiner;
     private ImageButton btnArcher;
+    private ImageButton btnMonk;
+    private ImageButton btnDragon;
     private float timeToMove = 0;
 
 
@@ -82,6 +88,8 @@ public class GameScreen implements Screen {
 
     //Stadistics
     private int unidades;
+    private float timerToMine = 0;
+    private float timeToMine = 0.5F;
     private int gold = 200;
 
 
@@ -131,27 +139,42 @@ public class GameScreen implements Screen {
         warrior_button = new Texture("sword.png");
         miner_button = new Texture("money.png");
         archer_button = new Texture("bow.png");
+        monk_button = new Texture("monk.png");
+        dragon_button = new Texture("dragon.png");
         trd_warrior_button = new TextureRegionDrawable(warrior_button);
         trd_miner_button = new TextureRegionDrawable(miner_button);
         trd_archer_button = new TextureRegionDrawable(archer_button);
+        trd_monk_button = new TextureRegionDrawable(monk_button);
+        trd_dragon_button = new TextureRegionDrawable(dragon_button);
         btnWarrior = new ImageButton(trd_warrior_button);
         btnMiner = new ImageButton(trd_miner_button);
         btnArcher = new ImageButton(trd_archer_button);
+        btnMonk = new ImageButton(trd_monk_button);
+        btnDragon = new ImageButton(trd_dragon_button);
         stage.addActor(btnWarrior);
         stage.addActor(btnMiner);
         stage.addActor(btnArcher);
+        stage.addActor(btnMonk);
+        stage.addActor(btnDragon);
 
         btnWarrior.setPosition(xWarr,PixelWars.ALTO-btnWarrior.getHeight()-1);
         btnMiner.setPosition(xMiner,PixelWars.ALTO-btnMiner.getHeight()-1);
         btnArcher.setPosition(xArcher, PixelWars.ALTO-btnArcher.getHeight()-1);
+        btnMonk.setPosition(xMonk, PixelWars.ALTO-btnMonk.getHeight()-1);
+        btnDragon.setPosition(xDragon, PixelWars.ALTO-btnDragon.getHeight()-1);
+
 
         btnMiner.addListener(new ClickListener() {
                                            @Override
                                            public void clicked(InputEvent event, float x, float y) {
-                                               super.clicked(event, x, y);
-                                               gold+=10;
-                                               System.out.println(gold);
-                                               label3.setText(gold);
+                                               if (gold>= 50 && unidades<20){
+                                                   minero miner = new minero(myCastle.getX()+myCastle.getWidth(), animatedCastle.getY(), new Texture("guerreroAzulCaminando.png"), new Texture("guerreroAzulParado.png"), new Texture("guerreroAzulAtacando.png"), 29, 44,29, 44, 59, 42, 25, 10);
+                                                   myWarriorsQ.addLast(miner);
+                                                   unidades+=1;
+                                                   gold-=50;
+                                                   label3.setText(gold);
+                                                   label2.setText(unidades+"/20");
+                                               }
                                            }
                                        }
         );
@@ -181,6 +204,38 @@ public class GameScreen implements Screen {
                                            myWarriorsQ.addLast(warrior);
                                            unidades +=1;
                                            gold-=100;
+                                           label3.setText(gold);
+                                           label2.setText(unidades+"/20");
+
+                                       }
+
+                                   }
+                               }
+        );
+
+        btnMonk.addListener(new ClickListener(){
+                                @Override
+                                public void clicked(InputEvent event, float x, float y) {
+                                    if (gold>=500 && unidades <20){
+                                        Cura monk = new Cura(myCastle.getX()+myCastle.getWidth(), animatedCastle.getY(), new Texture("guerreroAzulCaminando.png"), new Texture("arqueroAzulParado.png"), new Texture("guerreroAzulAtacando.png"), 29, 44, 36,37,59, 42, 50, 20);
+                                        myWarriorsQ.addLast(monk);
+                                        unidades +=1;
+                                        gold-=500;
+                                        label3.setText(gold);
+                                        label2.setText(unidades+"/20");
+                                    }
+                                }
+                            }
+        );
+
+        btnDragon.addListener(new ClickListener() {
+                                   @Override
+                                   public void clicked(InputEvent event, float x, float y) {
+                                       if (gold>=1500 && unidades < 20){
+                                           Guerrero warrior = new Guerrero(myCastle.getX()+myCastle.getWidth(), animatedCastle.getY(), new Texture("guerreroAzulCaminando.png"), new Texture("guerreroAzulParado.png"), new Texture("guerreroAzulAtacando.png"), 29, 44,29, 44, 59, 42, 150, 30);
+                                           myWarriorsQ.addLast(warrior);
+                                           unidades +=1;
+                                           gold-=1500;
                                            label3.setText(gold);
                                            label2.setText(unidades+"/20");
 
@@ -375,14 +430,33 @@ public class GameScreen implements Screen {
     private void ColisionConEnemigo(AnimacionGuerrero first) {
         if (!enemyWarriorsQ.isEmpty()){
             if (first.getSprite().getBoundingRectangle().overlaps(enemyWarriorsQ.first().getSprite().getBoundingRectangle())){
-                Guerrero warrior = (Guerrero) first;
-                first.setEstado(EstadoGuerrero.ATACANDO);
-                enemyWarriorsQ.first().setHp(warrior.Espadazo(enemyWarriorsQ.first().getHp()));
-                comprobarVivoEnemigo();
+                if (first.getClass() == Guerrero.class) {
+                    Guerrero warrior = (Guerrero) first;
+                    first.setEstado(EstadoGuerrero.ATACANDO);
+                    enemyWarriorsQ.first().setHp(warrior.Espadazo(enemyWarriorsQ.first().getHp()));
+                    comprobarVivoEnemigo();
+                }else if (first.getClass() == Arquero.class){
+                    Arquero warrior = (Arquero) first;
+                    first.setEstado(EstadoGuerrero.ATACANDO);
+                    enemyWarriorsQ.first().setHp(warrior.Flechazo(enemyWarriorsQ.first().getHp()));
+                    comprobarVivoEnemigo();
+                }else if (first.getClass() == minero.class){
+                    minero miner = (minero) first;
+                    first.setEstado(EstadoGuerrero.ATACANDO);
+                    timerToMine += Gdx.graphics.getDeltaTime();
+                    if (timerToMine>= timeToMine){
+                        gold += 10;
+                        label3.setText(gold);
+                        timerToMine = 0;
+                    }
+                    enemyWarriorsQ.first().setHp(miner.picar(enemyWarriorsQ.first().getHp()));
+                }
             }else {
                 first.setEstado(EstadoGuerrero.CAMINANDO);
                 first.moverX(1);
             }
+
+
         }else{
             ColisionCatilloEnemigo(animatedEnemyCastle);
 
@@ -417,13 +491,14 @@ public class GameScreen implements Screen {
 
     private void comprobarVivoAliado() {
         if (myWarriorsQ.first().getHp()<= 0){
-            unidades-=1;
-            label2.setText(unidades+"/20");
-            myWarriorsQ.removeFirst();
+                unidades -= 1;
+                label2.setText(unidades + "/20");
+                myWarriorsQ.removeFirst();
+            }
 
 
         }
-    }
+
     private void formarEnemigos() {
         for (int i = 0; i < enemyWarriorsQ.size; i++){
             AnimacionGuerrero enemy = enemyWarriorsQ.get(i);
@@ -465,6 +540,8 @@ public class GameScreen implements Screen {
                 if (warrior.getSprite().getBoundingRectangle().overlaps(myWarriorsQ.get(i-1).getSprite().getBoundingRectangle())){
                     if (warrior.getClass()==Arquero.class)
                         ArquerosDisparando(warrior);
+                    else if(warrior.getClass() == Cura.class)
+                        Curacion(warrior);
                     else {
                         warrior.setEstado(EstadoGuerrero.QUIETO);
                     }
@@ -476,10 +553,15 @@ public class GameScreen implements Screen {
         }
     }
 
-
-
-
-
+    private void Curacion(AnimacionGuerrero warrior) {
+        if (myWarriorsQ.indexOf(warrior, false)-myWarriorsQ.indexOf(myWarriorsQ.first(),false)<=1 && myWarriorsQ.first().getEstado() == EstadoGuerrero.ATACANDO && !enemyWarriorsQ.isEmpty()){
+            warrior.setEstado(EstadoGuerrero.ATACANDO);
+            Cura Monje = (Cura) warrior;
+            enemyWarriorsQ.first().setHp(Monje.Curacion(myWarriorsQ.first().getHp()));
+        }else{
+            warrior.setEstado(EstadoGuerrero.QUIETO);
+        }
+    }
 
 
     public boolean isInside(int posx, int posy){
@@ -508,6 +590,9 @@ public class GameScreen implements Screen {
                 label2.setText(unidades+"/20");
                 btnWarrior.setPosition(xWarr+=aument,PixelWars.ALTO-btnWarrior.getHeight()-1);
                 btnMiner.setPosition(xMiner+=aument,PixelWars.ALTO-btnMiner.getHeight()-1);
+                btnArcher.setPosition(xArcher+=aument, PixelWars.ALTO-btnArcher.getHeight()-1);
+                btnMonk.setPosition(xMonk+=aument, PixelWars.ALTO-btnMonk.getHeight()-1);
+                btnDragon.setPosition(xDragon+=aument, PixelWars.ALTO-btnDragon.getHeight()-1);
                 gamePort.getCamera().position.x+=aument;
             }
             else if (Gdx.input.getX()<=Gdx.graphics.getWidth()/2 && gamePort.getCamera().position.x > 4 +PixelWars.ANCHO/2&&Gdx.input.getY()>50){
@@ -519,6 +604,9 @@ public class GameScreen implements Screen {
                 label2.setText(unidades+"/20");
                 btnWarrior.setPosition(xWarr-=aument,PixelWars.ALTO-btnWarrior.getHeight()-1);
                 btnMiner.setPosition(xMiner-=aument,PixelWars.ALTO-btnMiner.getHeight()-1);
+                btnArcher.setPosition(xArcher-=aument, PixelWars.ALTO-btnArcher.getHeight()-1);
+                btnMonk.setPosition(xMonk-=aument, PixelWars.ALTO-btnMonk.getHeight()-1);
+                btnDragon.setPosition(xDragon-=aument, PixelWars.ALTO-btnDragon.getHeight()-1);
                 gamePort.getCamera().position.x-=aument;
             }
 
